@@ -5,6 +5,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   const startBtn = document.getElementById("startBtn");
   const stopBtn = document.getElementById("stopBtn");
   const cameraFeed = document.getElementById("cameraFeed");
+  const filters = document.getElementById("filters");
+
+  const grayscaleBtn = document.getElementById("grayscaleBtn");
+  const sepiaBtn = document.getElementById("sepiaBtn");
+  const invertBtn = document.getElementById("invertBtn");
+  const noneBtn = document.getElementById("noneBtn");
 
   startBtn.addEventListener("click", async () => {
     try {
@@ -13,6 +19,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       cameraFeed.srcObject = cameraStream;
       cameraFeed.style.display = "block";
+      filters.style.display = "block";
 
       const combinedStream = new MediaStream([
         ...displayStream.getTracks(),
@@ -32,6 +39,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     startBtn.disabled = false;
     stopBtn.disabled = true;
     cameraFeed.style.display = "none";
+    filters.style.display = "none";
+  });
+
+  grayscaleBtn.addEventListener("click", () => {
+    cameraFeed.style.filter = "grayscale(100%)";
+  });
+
+  sepiaBtn.addEventListener("click", () => {
+    cameraFeed.style.filter = "sepia(100%)";
+  });
+
+  invertBtn.addEventListener("click", () => {
+    cameraFeed.style.filter = "invert(100%)";
+  });
+
+  noneBtn.addEventListener("click", () => {
+    cameraFeed.style.filter = "none";
   });
 });
 
