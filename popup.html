@@ -9,6 +9,7 @@
 <body>
   <div class="controls">
     <div id="filterSelection" style="display: none;">
+      <video id="cameraFeed" width="200" height="150" autoplay muted></video>
       <label for="filter">Choose a filter:</label>
       <select id="filter">
         <option value="none">None</option>
@@ -25,7 +26,6 @@
       </select>
       <button id="applyFilterBtn">Apply Filter & Start Recording</button>
     </div>
-    <video id="cameraFeed" width="200" height="150" autoplay muted style="display: none;"></video>
     <button id="startBtn">Share Screen</button>
     <button id="stopBtn" disabled>Stop Recording</button>
   </div>

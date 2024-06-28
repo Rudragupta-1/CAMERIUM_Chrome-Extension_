@@ -9,20 +9,26 @@ document.addEventListener("DOMContentLoaded", async () => {
   const applyFilterBtn = document.getElementById("applyFilterBtn");
   const filterSelect = document.getElementById("filter");
 
-  startBtn.addEventListener("click", () => {
-    filterSelection.style.display = "block";
+  startBtn.addEventListener("click", async () => {
+    try {
+      const cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
+      cameraFeed.srcObject = cameraStream;
+      cameraFeed.style.display = "block";
+      filterSelection.style.display = "block";
+    } catch (err) {
+      console.error("Error accessing camera: ", err);
+    }
+  });
+
+  filterSelect.addEventListener("change", () => {
+    const filter = filterSelect.value;
+    cameraFeed.style.filter = filter;
   });
 
   applyFilterBtn.addEventListener("click", async () => {
     try {
       const displayStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-      const cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
-
-      const filter = filterSelect.value;
-      cameraFeed.style.filter = filter;
-      cameraFeed.srcObject = cameraStream;
-      cameraFeed.style.display = "block";
-      filterSelection.style.display = "none";
+      const cameraStream = cameraFeed.srcObject;
 
       const combinedStream = new MediaStream([
         ...displayStream.getTracks(),
@@ -32,8 +38,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       startRecording(combinedStream);
       startBtn.disabled = true;
       stopBtn.disabled = false;
+      filterSelection.style.display = "none";
     } catch (err) {
-      console.error("Error accessing media: ", err);
+      console.error("Error accessing display media: ", err);
     }
   });
 
