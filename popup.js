@@ -4,15 +4,26 @@ let recordedChunks = [];
 document.addEventListener("DOMContentLoaded", async () => {
   const startBtn = document.getElementById("startBtn");
   const stopBtn = document.getElementById("stopBtn");
+  const cameraFeed = document.getElementById("cameraFeed");
 
   startBtn.addEventListener("click", async () => {
     try {
-      const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-      startRecording(stream);
+      const displayStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      const cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
+
+      cameraFeed.srcObject = cameraStream;
+      cameraFeed.style.display = "block";
+
+      const combinedStream = new MediaStream([
+        ...displayStream.getTracks(),
+        ...cameraStream.getTracks()
+      ]);
+
+      startRecording(combinedStream);
       startBtn.disabled = true;
       stopBtn.disabled = false;
     } catch (err) {
-      console.error("Error accessing display media: ", err);
+      console.error("Error accessing media: ", err);
     }
   });
 
@@ -20,6 +31,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     stopRecording();
     startBtn.disabled = false;
     stopBtn.disabled = true;
+    cameraFeed.style.display = "none";
   });
 });
 
