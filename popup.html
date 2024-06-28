@@ -8,14 +8,25 @@
 </head>
 <body>
   <div class="controls">
-    <video id="cameraFeed" width="200" height="150" autoplay muted style="display: none;"></video>
-    <div id="filters" style="display: none;">
-      <button id="grayscaleBtn">Grayscale</button>
-      <button id="sepiaBtn">Sepia</button>
-      <button id="invertBtn">Invert</button>
-      <button id="noneBtn">None</button>
+    <div id="filterSelection" style="display: none;">
+      <label for="filter">Choose a filter:</label>
+      <select id="filter">
+        <option value="none">None</option>
+        <option value="grayscale(100%)">Grayscale</option>
+        <option value="sepia(100%)">Sepia</option>
+        <option value="invert(100%)">Invert</option>
+        <option value="blur(5px)">Blur</option>
+        <option value="brightness(150%)">Brightness</option>
+        <option value="contrast(150%)">Contrast</option>
+        <option value="hue-rotate(90deg)">Hue Rotate</option>
+        <option value="saturate(200%)">Saturate</option>
+        <option value="opacity(50%)">Opacity</option>
+        <option value="drop-shadow(8px 8px 10px gray)">Drop Shadow</option>
+      </select>
+      <button id="applyFilterBtn">Apply Filter & Start Recording</button>
     </div>
-    <button id="startBtn">Start Recording</button>
+    <video id="cameraFeed" width="200" height="150" autoplay muted style="display: none;"></video>
+    <button id="startBtn">Share Screen</button>
     <button id="stopBtn" disabled>Stop Recording</button>
   </div>
   <script src="popup.js"></script>

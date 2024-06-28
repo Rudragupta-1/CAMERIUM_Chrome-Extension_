@@ -5,21 +5,24 @@ document.addEventListener("DOMContentLoaded", async () => {
   const startBtn = document.getElementById("startBtn");
   const stopBtn = document.getElementById("stopBtn");
   const cameraFeed = document.getElementById("cameraFeed");
-  const filters = document.getElementById("filters");
+  const filterSelection = document.getElementById("filterSelection");
+  const applyFilterBtn = document.getElementById("applyFilterBtn");
+  const filterSelect = document.getElementById("filter");
 
-  const grayscaleBtn = document.getElementById("grayscaleBtn");
-  const sepiaBtn = document.getElementById("sepiaBtn");
-  const invertBtn = document.getElementById("invertBtn");
-  const noneBtn = document.getElementById("noneBtn");
+  startBtn.addEventListener("click", () => {
+    filterSelection.style.display = "block";
+  });
 
-  startBtn.addEventListener("click", async () => {
+  applyFilterBtn.addEventListener("click", async () => {
     try {
       const displayStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
       const cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
 
+      const filter = filterSelect.value;
+      cameraFeed.style.filter = filter;
       cameraFeed.srcObject = cameraStream;
       cameraFeed.style.display = "block";
-      filters.style.display = "block";
+      filterSelection.style.display = "none";
 
       const combinedStream = new MediaStream([
         ...displayStream.getTracks(),
@@ -39,23 +42,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     startBtn.disabled = false;
     stopBtn.disabled = true;
     cameraFeed.style.display = "none";
-    filters.style.display = "none";
-  });
-
-  grayscaleBtn.addEventListener("click", () => {
-    cameraFeed.style.filter = "grayscale(100%)";
-  });
-
-  sepiaBtn.addEventListener("click", () => {
-    cameraFeed.style.filter = "sepia(100%)";
-  });
-
-  invertBtn.addEventListener("click", () => {
-    cameraFeed.style.filter = "invert(100%)";
-  });
-
-  noneBtn.addEventListener("click", () => {
-    cameraFeed.style.filter = "none";
   });
 });
 
