@@ -39,6 +39,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       startBtn.disabled = true;
       stopBtn.disabled = false;
       filterSelection.style.display = "none";
+      cameraFeed.style.display = "block"; // Keep camera feed visible
     } catch (err) {
       console.error("Error accessing display media: ", err);
     }
