@@ -1,3 +1,72 @@
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.controls {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 300px;
+}
+
+button {
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 10px;
+  padding: 10px 20px;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+button:hover:not(:disabled) {
+  background-color: #45a049;
+  transform: translateY(-2px);
+}
+
+button:active:not(:disabled) {
+  background-color: #398d3c;
+  transform: translateY(0);
+}
+
+label {
+  font-size: 14px;
+  margin: 10px 0;
+  display: block;
+}
+
+select {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  width: 100%;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+video {
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  margin: 20px 0;
+  width: 100%;
+  height: auto;
+}
+
 #cursorOverlay {
   position: fixed;
   top: 0;
@@ -17,9 +86,19 @@
   transform: translate(-50%, -50%);
 }
 
-#selectionCanvas {
+#resolutionSelection {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 300px;
   position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 9999;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+canvas {
+  display: none;
 }
