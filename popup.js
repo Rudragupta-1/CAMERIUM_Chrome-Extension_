@@ -1,5 +1,6 @@
 let mediaRecorder;
 let recordedChunks = [];
+let originalCursorStyle = '';
 
 document.addEventListener("DOMContentLoaded", async () => {
   const startBtn = document.getElementById("startBtn");
@@ -8,6 +9,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   const filterSelection = document.getElementById("filterSelection");
   const applyFilterBtn = document.getElementById("applyFilterBtn");
   const filterSelect = document.getElementById("filter");
+  const cursorColorSelect = document.getElementById("cursorColor");
+  const cursorOverlay = document.getElementById("cursorOverlay");
+  const resolutionSelection = document.getElementById("resolutionSelection");
+  const saveRecordingBtn = document.getElementById("saveRecordingBtn");
+  const resolutionSelect = document.getElementById("resolution");
 
   startBtn.addEventListener("click", async () => {
     try {
@@ -15,6 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       cameraFeed.srcObject = cameraStream;
       cameraFeed.style.display = "block";
       filterSelection.style.display = "block";
+      originalCursorStyle = document.documentElement.style.cursor; // Save original cursor style
     } catch (err) {
       console.error("Error accessing camera: ", err);
     }
@@ -35,11 +42,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         ...cameraStream.getTracks()
       ]);
 
+      // Apply cursor color overlay
+      const cursorColor = cursorColorSelect.value;
+      if (cursorColor !== 'auto') {
+        cursorOverlay.style.display = 'block';
+        cursorOverlay.innerHTML = `<div class="cursorCircle" style="background-color: ${cursorColor};"></div>`;
+      }
+
       startRecording(combinedStream);
       startBtn.disabled = true;
       stopBtn.disabled = false;
       filterSelection.style.display = "none";
       cameraFeed.style.display = "block"; // Keep camera feed visible
+
+      document.addEventListener('mousemove', updateCursorOverlay);
     } catch (err) {
       console.error("Error accessing display media: ", err);
     }
@@ -50,39 +66,74 @@ document.addEventListener("DOMContentLoaded", async () => {
     startBtn.disabled = false;
     stopBtn.disabled = true;
     cameraFeed.style.display = "none";
+    cursorOverlay.style.display = "none";
+    document.removeEventListener('mousemove', updateCursorOverlay);
+    document.documentElement.style.cursor = originalCursorStyle; // Revert cursor to original style
+    resolutionSelection.style.display = 'block'; // Show resolution selection
   });
-});
 
-function startRecording(stream) {
-  mediaRecorder = new MediaRecorder(stream);
+  saveRecordingBtn.addEventListener("click", () => {
+    const resolution = resolutionSelect.value.split('x');
+    const width = parseInt(resolution[0]);
+    const height = parseInt(resolution[1]);
+    saveRecording(width, height);
+    resolutionSelection.style.display = 'none';
+  });
 
-  mediaRecorder.ondataavailable = (event) => {
-    if (event.data.size > 0) {
-      recordedChunks.push(event.data);
-    }
-  };
+  function startRecording(stream) {
+    mediaRecorder = new MediaRecorder(stream);
 
-  mediaRecorder.onstop = () => {
-    const blob = new Blob(recordedChunks, {
-      type: "video/webm"
-    });
-    recordedChunks = [];
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.style.display = "none";
-    a.href = url;
-    a.download = "screen-recording.webm";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
+    mediaRecorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        recordedChunks.push(event.data);
+      }
+    };
 
-  mediaRecorder.start();
-}
+    mediaRecorder.onstop = () => {
+      console.log("Recording stopped");
+    };
 
-function stopRecording() {
-  if (mediaRecorder && mediaRecorder.state !== "inactive") {
-    mediaRecorder.stop();
+    mediaRecorder.start();
   }
-}
+
+  function stopRecording() {
+    if (mediaRecorder && mediaRecorder.state !== "inactive") {
+      mediaRecorder.stop();
+    }
+  }
+
+  function updateCursorOverlay(event) {
+    const cursorCircle = document.querySelector('.cursorCircle');
+    if (cursorCircle) {
+      cursorCircle.style.left = `${event.clientX}px`;
+      cursorCircle.style.top = `${event.clientY}px`;
+    }
+  }
+
+  function saveRecording(width, height) {
+    const blob = new Blob(recordedChunks, { type: "video/webm" });
+    const url = URL.createObjectURL(blob);
+    const video = document.createElement("video");
+    video.src = url;
+
+    video.onloadedmetadata = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(video, 0, 0, width, height);
+      canvas.toBlob((resizedBlob) => {
+        const a = document.createElement("a");
+        a.style.display = "none";
+        a.href = URL.createObjectURL(resizedBlob);
+        a.download = `screen-recording-${width}x${height}.webm`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, "video/webm");
+    };
+
+    video.play();
+  }
+});
