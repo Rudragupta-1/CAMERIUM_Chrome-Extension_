@@ -121,29 +121,46 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function saveRecording(width, height) {
-    const blob = new Blob(recordedChunks, { type: "video/webm" });
-    const url = URL.createObjectURL(blob);
-    const video = document.createElement("video");
-    video.src = url;
-
-    video.onloadedmetadata = () => {
-      const canvas = document.createElement("canvas");
+    const webmBlob = new Blob(recordedChunks, { type: "video/webm" });
+    
+    // Create a temporary video element to load the WebM content
+    const video = document.createElement('video');
+    video.src = URL.createObjectURL(webmBlob);
+    video.controls = true;
+    video.style.display = 'none'; // Hide the video element
+  
+    // Append the video element to the document body
+    document.body.appendChild(video);
+  
+    // Register an event listener to capture the 'loadedmetadata' event
+    video.onloadedmetadata = function() {
+      // Create a canvas element to draw the video frame
+      const canvas = document.createElement('canvas');
       canvas.width = width;
       canvas.height = height;
-      const ctx = canvas.getContext("2d");
+      const ctx = canvas.getContext('2d');
       ctx.drawImage(video, 0, 0, width, height);
-      canvas.toBlob((resizedBlob) => {
-        const a = document.createElement("a");
-        a.style.display = "none";
-        a.href = URL.createObjectURL(resizedBlob);
-        a.download = `screen-recording-${width}x${height}.webm`;
+  
+      // Convert the canvas content to a Blob representing the MP4 file
+      canvas.toBlob(function(mp4Blob) {
+        // Remove the temporary video element from the document body
+        document.body.removeChild(video);
+  
+        // Create a link element to trigger the download
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = URL.createObjectURL(mp4Blob);
+        a.download = `screen-recording-${width}x${height}.mp4`;
+  
+        // Append the link element to the document body and trigger the download
         document.body.appendChild(a);
         a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      }, "video/webm");
+  
+        // Clean up by revoking object URLs
+        URL.revokeObjectURL(a.href);
+        URL.revokeObjectURL(webmBlob);
+      }, 'video/mp4');
     };
-
-    video.play();
   }
+  
 });
