@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="controls">
+  <div id="container">
     <video id="cameraFeed" width="200" height="150" autoplay muted style="display: none;"></video>
     <div id="filterSelection" style="display: none;">
       <label for="filter">Choose a filter:</label>
@@ -35,20 +35,22 @@
       </select>
       <button id="applyFilterBtn">Apply Filter & Start Recording</button>
     </div>
-    <button id="startBtn">Share Screen</button>
-    <button id="stopBtn" disabled>Stop Recording</button>
-  </div>
-  <div id="cursorOverlay" style="display: none;"></div>
-  <div id="resolutionSelection" style="display: none;">
-    <label for="resolution">Choose resolution:</label>
-    <select id="resolution">
-      <option value="1920x1080">1920x1080</option>
-      <option value="1280x720">1280x720</option>
-      <option value="854x480">854x480</option>
-      <option value="640x360">640x360</option>
-      <option value="426x240">426x240</option>
-    </select>
-    <button id="saveRecordingBtn">Save Recording</button>
+    <div id="controls">
+      <button id="startBtn">Share Screen</button>
+      <button id="stopBtn" disabled>Stop Recording</button>
+    </div>
+    <div id="cursorOverlay" style="display: none;"></div>
+    <div id="resolutionSelection" style="display: none;">
+      <label for="resolution">Choose resolution:</label>
+      <select id="resolution">
+        <option value="1920x1080">1920x1080</option>
+        <option value="1280x720">1280x720</option>
+        <option value="854x480">854x480</option>
+        <option value="640x360">640x360</option>
+        <option value="426x240">426x240</option>
+      </select>
+      <button id="saveRecordingBtn">Save Recording</button>
+    </div>
   </div>
   <script src="popup.js"></script>
 </body>

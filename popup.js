@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const resolutionSelection = document.getElementById("resolutionSelection");
   const saveRecordingBtn = document.getElementById("saveRecordingBtn");
   const resolutionSelect = document.getElementById("resolution");
+  const controls = document.getElementById("controls");
 
   startBtn.addEventListener("click", async () => {
     try {
@@ -49,12 +50,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         cursorOverlay.innerHTML = `<div class="cursorCircle" style="background-color: ${cursorColor};"></div>`;
       }
 
+      cameraFeed.classList.add('fullScreen'); // Make camera feed full screen
+      controls.style.display = 'none'; // Hide controls
+
+      cameraFeed.addEventListener('mouseenter', () => {
+        controls.style.display = 'block'; // Show controls on hover
+      });
+
+      cameraFeed.addEventListener('mouseleave', () => {
+        controls.style.display = 'none'; // Hide controls when not hovering
+      });
+
       startRecording(combinedStream);
       startBtn.disabled = true;
       stopBtn.disabled = false;
       filterSelection.style.display = "none";
-      cameraFeed.style.display = "block"; // Keep camera feed visible
-
       document.addEventListener('mousemove', updateCursorOverlay);
     } catch (err) {
       console.error("Error accessing display media: ", err);
